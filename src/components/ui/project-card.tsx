@@ -29,7 +29,7 @@ export function ProjectCard({
               alt="Project icon"
               fill
               className="object-contain"
-              unoptimized={typeof icon === 'string'}
+              unoptimized={true}
             />
           </div>
         )}
