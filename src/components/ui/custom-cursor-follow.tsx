@@ -132,7 +132,7 @@ const CustomCursorFollow = ({
                 priority
                 alt="Cursor"
                 className={cn("-rotate-12")}
-                unoptimized
+                unoptimized={true}
               />
             </motion.div>
           </motion.div>
