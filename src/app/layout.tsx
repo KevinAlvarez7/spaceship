@@ -28,6 +28,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Animated favicon */}
+        <link 
+          rel="icon" 
+          href="/favicon.apng" 
+          type="image/apng" 
+        />
+        {/* Fallback static favicon for browsers that don't support animation */}
+        <link 
+          rel="alternate icon" 
+          href="/favicon.png" 
+          type="image/png"
+        />
+      </head>
       <body className={`${albertSans.variable} ${crimsonPro.variable} ${jetbrainsMono.variable}`}>
         {children}
         <Toaster />
