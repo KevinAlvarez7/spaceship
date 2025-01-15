@@ -2,6 +2,8 @@
 import './globals.css'
 import { Albert_Sans, Crimson_Pro, JetBrains_Mono } from 'next/font/google'
 import { Toaster } from "@/components/ui/toaster"
+import staticFavicon from '@/favicon/favicon-static.png'
+import animatedFavicon from '@/favicon/favicon-animated.png'
 
 const albertSans = Albert_Sans({ 
   subsets: ['latin'],
@@ -29,14 +31,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Remove any existing favicon.ico references */}
         <link rel="icon" href="data:," />  {/* Reset default favicon */}
         
         {/* Animated PNG with high priority */}
         <link 
           rel="icon" 
           type="image/png" 
-          href="/favicon/favicon-animated.png"
+          href={animatedFavicon.src}
           sizes="32x32"
         />
         
@@ -44,7 +45,7 @@ export default function RootLayout({
         <link 
           rel="alternate icon" 
           type="image/png" 
-          href="/favicon/favicon-static.png"
+          href={staticFavicon.src}
           sizes="32x32"
         />
       </head>

@@ -7,12 +7,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "bg-cyan-800 text-white hover:bg-cyan-700 active:bg-cyan-700 disabled:bg-cyan-900 disabled:text-cyan-700",
+        primary: "bg-cyan-900 text-cyan-300 hover:bg-cyan-800 active:bg-cyan-700 disabled:bg-cyan-950 disabled:text-cyan-800",
         secondary: "bg-stone-800 text-white hover:bg-stone-700 active:bg-stone-700 disabled:bg-stone-900 disabled:text-stone-700",
         "outline-primary": "border-2 border-cyan-800 bg-transparent text-cyan-800 hover:bg-cyan-50 active:bg-cyan-100 disabled:border-cyan-300 disabled:text-cyan-300",
         "outline-secondary": "border-2 border-stone-800 bg-transparent text-stone-800 hover:bg-stone-50 active:bg-stone-100 disabled:border-stone-300 disabled:text-stone-300",
         "ghost-primary": "bg-transparent text-cyan-800 hover:bg-cyan-100 active:bg-cyan-200 disabled:text-cyan-300",
-        "ghost-secondary": "bg-transparent text-neutral-600 hover:bg-neutral-800 hover:text-neutral-400 active:bg-neutral-800 disabled:text-neutral-900",
+        "ghost-secondary": "bg-transparent text-neutral-500 hover:text-neutral-300 active:bg-neutral-800 disabled:text-neutral-700",
         destructive: "bg-red-800 text-white hover:bg-red-700 active:bg-red-700 disabled:bg-red-900 disabled:text-red-700",
         "outline-destructive": "border-2 border-red-800 bg-transparent text-red-800 hover:bg-red-50 active:bg-red-100 disabled:border-red-300 disabled:text-red-300",
         "ghost-destructive": "bg-transparent text-red-800 hover:bg-red-100 active:bg-red-200 disabled:text-red-300",

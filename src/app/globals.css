@@ -98,3 +98,7 @@
     scrollbar-width: none;
   }
 }
+
+.astronaut-cursor:hover {
+  cursor: url('/assets/astronaut_animated_medium.png') 16 16, pointer;
+}

@@ -26,17 +26,17 @@ const OpenSidebar = ({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => vo
       className="space-y-4"
     >
       <ProjectCard
-        emoji="📝"
+        icon="@/assets/memo_3d.png"
         title="Create a Form"
         description="Build a simple feedback form"
       />
       <ProjectCard
-        emoji="📊"
+        icon="@/assets/memo_3d.png"
         title="Dashboard"
         description="Design a metrics dashboard"
       />
       <ProjectCard
-        emoji="🔌"
+        icon="@/assets/memo_3d.png"
         title="API Integration"
         description="Connect to a REST API"
       />
@@ -60,15 +60,15 @@ const ClosedSidebar = ({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => 
       className="space-y-4"
     >
       <ProjectCard
-        emoji="📝"
+        icon="@/assets/memo_3d.png"
         variant="minimal"
       />
       <ProjectCard
-        emoji="📊"
+        icon="@/assets/memo_3d.png"
         variant="minimal"
       />
       <ProjectCard
-        emoji="🔌"
+        icon="@/assets/memo_3d.png"
         variant="minimal"
       />
     </motion.div>

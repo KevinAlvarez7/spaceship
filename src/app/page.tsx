@@ -7,11 +7,14 @@ import { PanelsTopLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from "framer-motion";
 import { ProjectCard } from "@/components/ui/project-card";
+import memoIcon from '@/assets/memo_3d.png';
+import chartIcon from '@/assets/chart_increasing_3d.png';
+import plugIcon from '@/assets/electric_plug_3d.png';
 
 const OpenSidebar = ({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => void }) => (
   <div className="p-4">
     <div className="flex items-center justify-between mb-6">
-      <h2 className="font-primary text-2xl text-stone-500">Projects</h2>
+      <h2 className="font-primary text-2xl text-stone-300">Projects</h2>
       <Button
         variant="ghost-secondary"
         size="icon"
@@ -28,17 +31,17 @@ const OpenSidebar = ({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => vo
       className="space-y-4"
     >
       <ProjectCard
-        emoji="📝"
+        icon={memoIcon}
         title="Create a Form"
         description="Build a simple feedback form"
       />
       <ProjectCard
-        emoji="📊"
+        icon={chartIcon}
         title="Dashboard"
         description="Design a metrics dashboard"
       />
       <ProjectCard
-        emoji="🔌"
+        icon={plugIcon}
         title="API Integration"
         description="Connect to a REST API"
       />
@@ -65,15 +68,15 @@ const ClosedSidebar = ({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => 
       className="space-y-4"
     >
       <ProjectCard
-        emoji="📝"
+        icon={memoIcon}
         variant="minimal"
       />
       <ProjectCard
-        emoji="📊"
+        icon={chartIcon}
         variant="minimal"
       />
       <ProjectCard
-        emoji="🔌"
+        icon={plugIcon}
         variant="minimal"
       />
     </motion.div>
