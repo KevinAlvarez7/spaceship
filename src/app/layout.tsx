@@ -29,17 +29,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Animated favicon */}
+        {/* Remove any existing favicon.ico references */}
+        <link rel="icon" href="data:," />  {/* Reset default favicon */}
+        
+        {/* Animated PNG with high priority */}
         <link 
           rel="icon" 
-          href="/favicon/favicon-animated.png" 
           type="image/png" 
+          href="/favicon/favicon-animated.png"
+          sizes="32x32"
         />
-        {/* Fallback static favicon */}
+        
+        {/* Static fallback with lower priority */}
         <link 
           rel="alternate icon" 
-          href="/favicon/favicon-static.png" 
-          type="image/png"
+          type="image/png" 
+          href="/favicon/favicon-static.png"
+          sizes="32x32"
         />
       </head>
       <body className={`${albertSans.variable} ${crimsonPro.variable} ${jetbrainsMono.variable}`}>

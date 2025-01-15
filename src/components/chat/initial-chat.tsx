@@ -68,7 +68,7 @@ const InitialChatInterface = () => {
             className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-neutral-800 mb-4 border border-neutral-700"
           >
             <Image 
-              src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rocket.png" 
+              src="/assets/rocket_animated.png"
               alt="Rocket" 
               width={48}
               height={48}
