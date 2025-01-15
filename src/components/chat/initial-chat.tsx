@@ -72,7 +72,7 @@ const InitialChatInterface = () => {
               alt="Rocket" 
               width={48}
               height={48}
-              className="w-10 h-10"
+              className="w-12 h-12"
             />
           </motion.div>
           <h1 className="font-primary text-display-1 text-white mb-2">
