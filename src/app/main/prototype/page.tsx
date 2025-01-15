@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useChatStore } from '@/lib/store/chat-store';
 
-export default function PrototypePage() {
+function PrototypeContent() {
   const searchParams = useSearchParams();
   const prompt = searchParams.get('prompt');
   const [isLoading, setIsLoading] = useState(true);
@@ -48,5 +48,17 @@ export default function PrototypePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PrototypePage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center h-screen bg-neutral-900">
+        <div className="text-neutral-400">Loading...</div>
+      </div>
+    }>
+      <PrototypeContent />
+    </Suspense>
   );
 }
