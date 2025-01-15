@@ -32,13 +32,13 @@ export default function RootLayout({
         {/* Animated favicon */}
         <link 
           rel="icon" 
-          href="/favicon.apng" 
-          type="image/apng" 
+          href="/favicon/favicon-animated.png" 
+          type="image/png" 
         />
-        {/* Fallback static favicon for browsers that don't support animation */}
+        {/* Fallback static favicon */}
         <link 
           rel="alternate icon" 
-          href="/favicon.png" 
+          href="/favicon/favicon-static.png" 
           type="image/png"
         />
       </head>
