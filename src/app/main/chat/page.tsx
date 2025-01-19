@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { GitBranch, MousePointerClick } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ChatInput } from '@/components/chat/chat-input';
@@ -14,6 +14,7 @@ import {
   IClarificationMessage 
 } from '@/components/chat/message-components';
 import { v4 as uuidv4 } from 'uuid';
+import CarbonCalculator from '@/components/preview/carbon-calculator-preview';
 
 const ChatPage = () => {
 // Initial state type
@@ -22,7 +23,7 @@ const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarif
   {
     id: '1',
     role: 'user',
-    content: 'Create a feedback form for citizen services',
+    content: 'Create a carbon calculator app',
     timestamp: new Date()
   }
 ]);
@@ -46,6 +47,41 @@ const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarif
       callback();
     }, 2000);
   };
+
+  // Initial simulation when component mounts
+  useEffect(() => {
+    simulateThinking(() => {
+      // Add version update
+      const versionMessage: IVersionSystemMessage = {
+        id: uuidv4(),
+        role: 'system',
+        type: 'version',
+        content: 'Created version 1 with basic carbon calculator functionality',
+        version: '1',
+        features: [
+          'Basic calculator layout',
+          'Carbon footprint metrics',
+          'Input validation'
+        ],
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, versionMessage]);
+
+      // Add clarification question
+      simulateThinking(() => {
+        const clarificationMessage: IClarificationMessage = {
+          id: uuidv4(),
+          role: 'assistant',
+          content: 'Checking requirements',
+          question: 'Would you like to include transportation emissions in the calculator?',
+          onYes: () => {},
+          onNo: () => {},
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, clarificationMessage]);
+      });
+    });
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const handleSubmit = async (message: string) => {
       // User message
@@ -150,7 +186,7 @@ const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarif
           </div>
           <div className="flex-1 bg-stone-800 p-4">
             <div className="flex-1 overflow-auto rounded-3xl">
-              {/* Preview content will go here */}
+                <CarbonCalculator isLoading={isLoading} />
             </div>
           </div>
         </div>

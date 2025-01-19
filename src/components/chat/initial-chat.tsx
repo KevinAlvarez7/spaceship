@@ -136,7 +136,7 @@ const InitialChatInterface = () => {
           <p className="mb-2 text-center">Try these examples:</p>
           <div className="flex flex-wrap gap-2 justify-center ">
             {[
-              "Create a carbon calculator",
+              "Create a carbon calculator app",
               "Build a booking system for government facilities",
               "Design a survey form for public feedback"
             ].map((example, i) => (
