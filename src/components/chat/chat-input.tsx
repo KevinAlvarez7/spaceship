@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
 import { motion } from 'framer-motion'
@@ -12,50 +12,20 @@ interface ChatInputProps {
   onChange?: (value: string) => void;
 }
 
-const useTypewriter = (texts: string[], typingSpeed = 50, deletingSpeed = 30, pauseTime = 2000) => {
-  const [displayText, setDisplayText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(true);
+export interface ChatInputRef {
+  handleYesNoResponse: (question: string, response: 'Yes' | 'No') => void;
+}
 
-  useEffect(() => {
-    let timeout: NodeJS.Timeout;
-
-    if (isTyping) {
-      if (displayText === texts[currentIndex]) {
-        setIsTyping(false);
-        timeout = setTimeout(() => {
-          setIsTyping(false);
-        }, pauseTime);
-      } else {
-        timeout = setTimeout(() => {
-          setDisplayText(texts[currentIndex].slice(0, displayText.length + 1));
-        }, typingSpeed);
-      }
-    } else {
-      if (displayText === '') {
-        setCurrentIndex((current) => (current + 1) % texts.length);
-        setIsTyping(true);
-      } else {
-        timeout = setTimeout(() => {
-          setDisplayText(displayText.slice(0, -1));
-        }, deletingSpeed);
-      }
-    }
-
-    return () => clearTimeout(timeout);
-  }, [displayText, isTyping, currentIndex, texts, typingSpeed, deletingSpeed, pauseTime]);
-
-  return displayText;
-};
-
-export const ChatInput = ({ 
-  onSubmit, 
+const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
+  onSubmit,
   disabled = false,
   className = '',
-  isInitialChat = false
-}: ChatInputProps) => {
-  const [message, setMessage] = useState('')
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  isInitialChat = false,
+  value,
+  onChange
+}, ref) => {
+  const [message, setMessage] = useState(value || '');
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const placeholders = [
     "I need to create a secure document submission portal...",
@@ -63,20 +33,46 @@ export const ChatInput = ({
     "How do I implement multi-factor authentication for government staff...",
     "Create a public service announcement notification system...",
     "Build a permit application tracking system...",
-    "Design a secure internal communication platform...",
-    "Develop a citizen service request management system...",
-    "Create a public records search interface...",
-    "Implement a secure document verification system...",
-    "Build an emergency alert notification system..."
+    // ... other placeholders
   ];
 
-  const animatedPlaceholder = useTypewriter(
-    placeholders,
-    50,    // typing speed (ms)
-    30,    // deleting speed (ms)
-    3000   // pause time between texts (ms)
-  );
+  const useTypewriter = (texts: string[], typingSpeed = 50, deletingSpeed = 30, pauseTime = 3000) => {
+    const [displayText, setDisplayText] = useState('');
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [isTyping, setIsTyping] = useState(true);
 
+    useEffect(() => {
+      let timeout: NodeJS.Timeout;
+
+      if (isTyping) {
+        if (displayText === texts[currentIndex]) {
+          setIsTyping(false);
+          timeout = setTimeout(() => {
+            setIsTyping(false);
+          }, pauseTime);
+        } else {
+          timeout = setTimeout(() => {
+            setDisplayText(texts[currentIndex].slice(0, displayText.length + 1));
+          }, typingSpeed);
+        }
+      } else {
+        if (displayText === '') {
+          setCurrentIndex((current) => (current + 1) % texts.length);
+          setIsTyping(true);
+        } else {
+          timeout = setTimeout(() => {
+            setDisplayText(displayText.slice(0, -1));
+          }, deletingSpeed);
+        }
+      }
+
+      return () => clearTimeout(timeout);
+    }, [displayText, isTyping, currentIndex, texts, typingSpeed, deletingSpeed, pauseTime]);
+
+    return displayText;
+  };
+
+  const animatedPlaceholder = useTypewriter(placeholders);
   const staticPlaceholder = "Type your instructions to refine or modify the prototype...";
 
   // Auto-resize textarea
@@ -96,7 +92,13 @@ export const ChatInput = ({
     }
   }
 
-
+  useImperativeHandle(ref, () => ({
+    handleYesNoResponse: (question: string, response: 'Yes' | 'No') => {
+      const newMessage = `${question} ${response}`;
+      setMessage(newMessage);
+      onChange?.(newMessage);
+    }
+  }));
 
   return (
     <motion.form 
@@ -110,7 +112,10 @@ export const ChatInput = ({
         <textarea
           ref={textareaRef}
           value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          onChange={(e) => {
+            setMessage(e.target.value);
+            onChange?.(e.target.value);
+          }}
           placeholder={isInitialChat ? animatedPlaceholder : staticPlaceholder}
           className="
             w-full min-h-[120px] text-white text-base font-base leading-normal
@@ -147,6 +152,8 @@ export const ChatInput = ({
       </div>
     </motion.form>
   )
-}
+})
 
-export default ChatInput
+ChatInput.displayName = 'ChatInput';
+
+export { ChatInput };

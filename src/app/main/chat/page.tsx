@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { GitBranch, MousePointerClick } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ChatInput } from '@/components/chat/chat-input';
@@ -26,8 +26,18 @@ const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarif
     timestamp: new Date()
   }
 ]);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+
+  const chatInputRef = useRef<{ handleYesNoResponse: (question: string, response: 'Yes' | 'No') => void }>(null);
+
+  const handleYes = (question: string) => {
+    chatInputRef.current?.handleYesNoResponse(question, 'Yes');
+  };
+
+  const handleNo = (question: string) => {
+    chatInputRef.current?.handleYesNoResponse(question, 'No');
+  };
 
   const simulateThinking = (callback: () => void) => {
     setIsLoading(true);
@@ -82,14 +92,6 @@ const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarif
     });
   };
 
-  const handleYes = (question: string) => {
-    setInputValue(`${question} Yes. `);
-  };
-
-  const handleNo = (question: string) => {
-    setInputValue(`${question} No. `);
-  };
-
   return (
     <div className="flex w-full h-full bg-neutral-900 rounded-3xl overflow-hidden">
       {/* Chat Panel */}
@@ -99,7 +101,7 @@ const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarif
           <div className="flex-none min-h-[68px] border-b border-neutral-800">
             <div className="flex items-center p-4">
               <h2 className="font-primary text-h2 font-medium text-stone-100">
-                Prototype Builder
+                Carbon Calculator
               </h2>
             </div>
           </div>
@@ -118,16 +120,15 @@ const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarif
 
           {/* Chat Input */}
           <div className="flex-none p-4 border-t border-neutral-800">
-            <ChatInput 
-              onSubmit={handleSubmit}
-              disabled={isLoading}
-              value={inputValue}
-              onChange={setInputValue}
-              isInitialChat={false}
-            />
+              <ChatInput 
+                ref={chatInputRef}
+                onSubmit={handleSubmit}
+                disabled={isLoading}
+                isInitialChat={false}
+              />
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Preview Panel */}
       <div className="w-3/5 h-full">

@@ -143,36 +143,36 @@ export const ErrorMessage = ({
 
 // Clarification Message
 export const ClarificationMessage = ({ 
-  question,
-  onYes,
-  onNo 
-}: { 
-  question: string,
-  onYes: () => void,
-  onNo: () => void 
-}) => (
-  <MessageContainer>
-    <div className="flex flex-col gap-3 max-w-[80%] bg-stone-800 rounded-2xl rounded-tl-sm p-4">
-      <TypewriterText text={question} speed={30} />
-      <div className="flex gap-2">
-        <Button 
-          variant="ghost-secondary" 
-          size="sm" 
-          onClick={onYes}
-        >
-          Yes
-        </Button>
-        <Button 
-          variant="ghost-secondary" 
-          size="sm" 
-          onClick={onNo}
-        >
-          No
-        </Button>
+    question,
+    onYes,
+    onNo 
+  }: { 
+    question: string;
+    onYes: (question: string) => void;
+    onNo: (question: string) => void;
+  }) => (
+    <MessageContainer>
+      <div className="flex flex-col gap-3 max-w-[80%] bg-stone-800 rounded-2xl rounded-tl-sm p-4">
+        <TypewriterText text={question} speed={30} />
+        <div className="flex gap-2">
+          <Button 
+            variant="ghost-secondary" 
+            size="sm" 
+            onClick={() => onYes(question)}
+          >
+            Yes
+          </Button>
+          <Button 
+            variant="ghost-secondary" 
+            size="sm" 
+            onClick={() => onNo(question)}
+          >
+            No
+          </Button>
+        </div>
       </div>
-    </div>
-  </MessageContainer>
-);
+    </MessageContainer>
+  );
 
 // Thinking Message
 export const ThinkingMessage = () => (
