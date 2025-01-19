@@ -17,18 +17,32 @@ import { v4 as uuidv4 } from 'uuid';
 import CarbonCalculator from '@/components/preview/carbon-calculator-preview';
 
 const ChatPage = () => {
-// Initial state type
-const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarificationMessage)[]>([
-  // Initial message
-  {
-    id: '1',
-    role: 'user',
-    content: 'Create a carbon calculator app',
-    timestamp: new Date()
-  }
-]);
+  const clarificationQuestions = [
+    'Should I add email notification for form submissions?',
+    'Would you like to include data visualization features?',
+    'Should I implement user authentication?',
+    'Do you want to add a search functionality?',
+    'Should I include export to PDF capability?',
+    'Would you like to add multi-language support?',
+    'Should I implement real-time updates?',
+    'Do you want to include a feedback rating system?'
+  ];
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  // Initial state type
+  const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarificationMessage)[]>([
+    // Initial message
+    {
+      id: '1',
+      role: 'user',
+      content: 'Create a carbon calculator app',
+      timestamp: new Date()
+    }
+  ]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [currentVersion, setCurrentVersion] = useState(1);
 
   const chatInputRef = useRef<{ handleYesNoResponse: (question: string, response: 'Yes' | 'No') => void }>(null);
 
@@ -84,25 +98,28 @@ const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarif
   }, []); // Empty dependency array means this runs once when component mounts
 
   const handleSubmit = async (message: string) => {
-      // User message
-      const userMessage: IUserMessage = {
-        id: uuidv4(),
-        role: 'user',
-        content: message,
-        timestamp: new Date()
-      };
+    // User message
+    const userMessage: IUserMessage = {
+      id: uuidv4(),
+      role: 'user',
+      content: message,
+      timestamp: new Date()
+    };
     setMessages(prev => [...prev, userMessage]);
 
     // Simulate AI thinking and response
     simulateThinking(() => {
-      // Add version update
+      // Increment version
+      const newVersion = currentVersion + 1;
+      setCurrentVersion(newVersion);
+
       // Version message
       const versionMessage: IVersionSystemMessage = {
         id: uuidv4(),
         role: 'system',
         type: 'version',
-        content: 'Created version 1 with basic form functionality',  // Add this line
-        version: '1',
+        content: `Version ${newVersion} created`,
+        version: newVersion.toString(),
         features: [
           'Basic form layout',
           'Input validation',
@@ -112,13 +129,16 @@ const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarif
       };
       setMessages(prev => [...prev, versionMessage]);
 
-      // Add clarification question
+      // Add clarification question with rotating questions
       simulateThinking(() => {
+        const nextQuestionIndex = (currentQuestionIndex + 1) % clarificationQuestions.length;
+        setCurrentQuestionIndex(nextQuestionIndex);
+
         const clarificationMessage: IClarificationMessage = {
           id: uuidv4(),
           role: 'assistant' as const,
-          content: 'Content here',  // Add this line
-          question: 'Should I add email notification for form submissions?',
+          content: `Version ${newVersion} deployed`,
+          question: clarificationQuestions[nextQuestionIndex],
           onYes: () => {},
           onNo: () => {},
           timestamp: new Date()
