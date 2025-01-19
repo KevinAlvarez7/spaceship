@@ -20,7 +20,7 @@ export function ProjectCard({
     return (
       <div 
         onClick={onClick}
-        className="p-2 rounded-md opacity-75 bg-stone-900 hover:opacity-100 cursor-pointer transition-colors"
+        className="p-2 rounded-md bg-stone-800 hover:bg-stone-600 cursor-pointer transition-colors"
       >
         {icon && (
           <div className="flex-shrink-0 w-6 h-6 relative">
@@ -40,7 +40,7 @@ export function ProjectCard({
   return (
     <div 
       onClick={onClick}
-      className="w-full p-3 rounded-md opacity-75 hover:opacity-100 bg-stone-900 hover:bg-stone-800 cursor-pointer transition-colors"
+      className="w-full p-3 rounded-md bg-neutral-800 hover:bg-neutral-600 cursor-pointer transition-colors"
     >
       <div className="flex flex-row gap-2">
         {icon && (

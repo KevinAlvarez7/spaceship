@@ -5,8 +5,6 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ChatInput } from './chat-input';
-import { useChatStore } from '@/lib/store/chat-store';
-import { useToast } from '@/components/ui/use-toast';
 import { Button } from '@/components/ui/button';
 import { MoveUpRight } from 'lucide-react';
 import rocketAnimation from '@/assets/rocket_animated.png';
@@ -15,48 +13,30 @@ import CustomCursorFollow from '@/components/ui/custom-cursor-follow';
 const InitialChatInterface = () => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
-  const chatStore = useChatStore()
-  const { toast } = useToast()
   const [animationComplete, setAnimationComplete] = useState(false);
 
   const handleSubmit = async (message: string) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      // 1. Save the initial prompt to chat store
-      await chatStore.sendMessage({
-        content: message,
-        role: 'user'
-      })
-
-      // 2. Mock API call - replace this with your actual API integration
-      // const response = await fetch('/api/generate', {
-      //   method: 'POST',
-      //   body: JSON.stringify({ prompt: message }),
-      // })
+      console.log('Starting submission with message:', message);
       
-      // 3. Store the AI response
-      await chatStore.sendMessage({
-        content: "I'll help you create a prototype based on your requirements...",
-        role: 'assistant'
-      })
-
-      // 4. Navigate to the chat interface
-      router.push('/chat')
-
+      // Process the initial prompt
+      console.log('Processed initial prompt');
+  
+      // Then navigate to chat
+      console.log('Navigating to chat...');
+      router.push('/main/chat');
+  
     } catch (error) {
-      console.error('Error:', error)
-      toast({
-        title: 'Error',
-        description: 'Failed to process your request. Please try again.',
-        variant: 'destructive',
-      })
+      console.error('Error in handleSubmit:', error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full h-full rounded-3xl bg-neutral-900 flex flex-col items-center justify-center p-4">
+      {/* Rest of your component remains the same */}
       <motion.div 
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -131,18 +111,19 @@ const InitialChatInterface = () => {
               </motion.div>
             </CustomCursorFollow>
           </motion.div>
-          <h1 className="font-primary text-display-1 text-white mb-2">
+          <h1 className="font-primary text-display-1 text-stone-100 mb-2">
             What can I help you ship?
           </h1>
-          <p className="font-base text-body-lg text-stone-500">
+          <p className="font-base text-body-lg text-stone-400">
             Don&apos;t worry, it&apos;s not rocket science.
           </p>
         </div>
 
         {/* Chat Input */}
         <ChatInput 
-            onSubmit={handleSubmit}
-            disabled={isLoading}
+          onSubmit={handleSubmit}
+          disabled={isLoading}
+          isInitialChat={true}
         />
 
         {/* Examples */}
@@ -155,7 +136,7 @@ const InitialChatInterface = () => {
           <p className="mb-2 text-center">Try these examples:</p>
           <div className="flex flex-wrap gap-2 justify-center ">
             {[
-              "Create a dashboard to monitor citizen complaints",
+              "Create a carbon calculator",
               "Build a booking system for government facilities",
               "Design a survey form for public feedback"
             ].map((example, i) => (

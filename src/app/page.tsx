@@ -14,7 +14,7 @@ import plugIcon from '@/assets/electric_plug_3d.png';
 const OpenSidebar = ({ setSidebarOpen }: { setSidebarOpen: (open: boolean) => void }) => (
   <div className="p-4">
     <div className="flex items-center justify-between mb-6">
-      <h2 className="font-primary text-2xl text-stone-300">Projects</h2>
+      <h2 className="font-primary text-2xl text-stone-100">Projects</h2>
       <Button
         variant="ghost-secondary"
         size="icon"

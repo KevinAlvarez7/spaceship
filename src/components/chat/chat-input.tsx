@@ -4,9 +4,12 @@ import { Send } from 'lucide-react'
 import { motion } from 'framer-motion'
 
 interface ChatInputProps {
-  onSubmit: (message: string) => void
-  disabled?: boolean
-  className?: string
+  onSubmit: (message: string) => void;
+  disabled?: boolean;
+  className?: string;
+  isInitialChat?: boolean;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
 const useTypewriter = (texts: string[], typingSpeed = 50, deletingSpeed = 30, pauseTime = 2000) => {
@@ -19,24 +22,20 @@ const useTypewriter = (texts: string[], typingSpeed = 50, deletingSpeed = 30, pa
 
     if (isTyping) {
       if (displayText === texts[currentIndex]) {
-        // Finished typing current text, wait before starting to delete
         setIsTyping(false);
         timeout = setTimeout(() => {
           setIsTyping(false);
         }, pauseTime);
       } else {
-        // Type next character
         timeout = setTimeout(() => {
           setDisplayText(texts[currentIndex].slice(0, displayText.length + 1));
         }, typingSpeed);
       }
     } else {
       if (displayText === '') {
-        // Finished deleting, move to next text
         setCurrentIndex((current) => (current + 1) % texts.length);
         setIsTyping(true);
       } else {
-        // Delete next character
         timeout = setTimeout(() => {
           setDisplayText(displayText.slice(0, -1));
         }, deletingSpeed);
@@ -52,7 +51,8 @@ const useTypewriter = (texts: string[], typingSpeed = 50, deletingSpeed = 30, pa
 export const ChatInput = ({ 
   onSubmit, 
   disabled = false,
-  className = ''
+  className = '',
+  isInitialChat = false
 }: ChatInputProps) => {
   const [message, setMessage] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -70,12 +70,14 @@ export const ChatInput = ({
     "Build an emergency alert notification system..."
   ];
 
-  const placeholder = useTypewriter(
+  const animatedPlaceholder = useTypewriter(
     placeholders,
     50,    // typing speed (ms)
     30,    // deleting speed (ms)
-    2000   // pause time between texts (ms)
+    3000   // pause time between texts (ms)
   );
+
+  const staticPlaceholder = "Type your instructions to refine or modify the prototype...";
 
   // Auto-resize textarea
   useEffect(() => {
@@ -94,40 +96,53 @@ export const ChatInput = ({
     }
   }
 
+
+
   return (
     <motion.form 
       onSubmit={handleSubmit}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.2 }}
-      className={`bg-neutral-800 border border-neutral-700 rounded-xl p-4 ${className}`}
+      className={`flex flex-col bg-neutral-800 border border-neutral-700 rounded-2xl p-4 ${className}`}
     >
       <div className="relative">
         <textarea
           ref={textareaRef}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder={placeholder}
-          className="w-full min-h-[120px] text-white placeholder-neutral-700 bg-transparent rounded-lg resize-none focus:outline-none"
+          placeholder={isInitialChat ? animatedPlaceholder : staticPlaceholder}
+          className="
+            w-full min-h-[120px] text-white text-base font-base leading-normal
+            placeholder:text-neutral-500 
+            placeholder:text-base 
+            placeholder:font-base 
+            placeholder:leading-normal
+            bg-neutral-800 resize-none focus:outline-none
+          "
           disabled={disabled}
         />
-        <div className="absolute bottom-0 right-0 flex gap-2">
-          <Button
-            type="button"
-            variant="ghost-secondary"
-            disabled={disabled || !message.trim()}
-          >
-            Improve prompt
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            iconPosition="trailing"
-            disabled={disabled || !message.trim()}
-          >
-            <Send className="h-4 w-4" />
-            Generate
-          </Button>
+        <div className="w-full justify-end flex gap-2">
+          <div className="flex gap-2">
+            {isInitialChat && (
+              <Button
+                type="button"
+                variant="ghost-secondary"
+                disabled={disabled || !message.trim()}
+              >
+                Improve prompt
+              </Button>
+            )}
+            <Button
+              type="submit"
+              variant="primary"
+              iconPosition="trailing"
+              disabled={disabled || !message.trim()}
+            >
+              <Send className="h-4 w-4" />
+              {isInitialChat ? 'Build it' : 'Send'}
+            </Button>
+          </div>
         </div>
       </div>
     </motion.form>

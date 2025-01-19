@@ -61,7 +61,7 @@ const CustomCursorFollow = ({
     };
   }, [handleMouseEnter, handleMouseLeave, updatePosition]);
 
-  console.log('Current cursor image:', cursorImageSrc);
+
 
   return (
     <>

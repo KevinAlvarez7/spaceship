@@ -1,7 +1,6 @@
 // src/app/layout.tsx
 import './globals.css'
 import { Albert_Sans, Crimson_Pro, JetBrains_Mono } from 'next/font/google'
-import { Toaster } from "@/components/ui/toaster"
 import staticFavicon from '@/favicon/favicon-static.png'
 import animatedFavicon from '@/favicon/favicon-animated.png'
 
@@ -51,7 +50,6 @@ export default function RootLayout({
       </head>
       <body className={`${albertSans.variable} ${crimsonPro.variable} ${jetbrainsMono.variable}`}>
         {children}
-        <Toaster />
       </body>
     </html>
   )
