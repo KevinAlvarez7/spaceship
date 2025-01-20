@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GitBranch, MousePointerClick } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ChatInput } from '@/components/chat/chat-input';
+import { ChatInput, ChatInputRef } from '@/components/chat/chat-input';
 import { 
   MessageList, 
   ThinkingMessage, 
@@ -11,27 +11,20 @@ import {
   IBaseMessage, 
   IUserMessage, 
   IVersionSystemMessage, 
-  IClarificationMessage 
+  IClarificationMessage, 
+  IErrorSystemMessage 
 } from '@/components/chat/message-components';
 import { v4 as uuidv4 } from 'uuid';
 import CarbonCalculator from '@/components/preview/carbon-calculator-preview';
+import { clarificationQuestions } from './questions';
 
 const ChatPage = () => {
-  const clarificationQuestions = [
-    'Should I add email notification for form submissions?',
-    'Would you like to include data visualization features?',
-    'Should I implement user authentication?',
-    'Do you want to add a search functionality?',
-    'Should I include export to PDF capability?',
-    'Would you like to add multi-language support?',
-    'Should I implement real-time updates?',
-    'Do you want to include a feedback rating system?'
-  ];
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [clarificationCount, setClarificationCount] = useState(0);
+  const [questionCount, setQuestionCount] = useState(0);
 
   // Initial state type
-  const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarificationMessage)[]>([
+  const [messages, setMessages] = useState<(IBaseMessage | SystemMessage | IClarificationMessage | IErrorSystemMessage)[]>([
     // Initial message
     {
       id: '1',
@@ -44,14 +37,18 @@ const ChatPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentVersion, setCurrentVersion] = useState(1);
 
-  const chatInputRef = useRef<{ handleYesNoResponse: (question: string, response: 'Yes' | 'No') => void }>(null);
+  const chatInputRef = useRef<ChatInputRef>(null);
 
   const handleYes = (question: string) => {
-    chatInputRef.current?.handleYesNoResponse(question, 'Yes');
+    if (chatInputRef.current) {
+      chatInputRef.current.handleYesNoResponse(question, 'Yes', true);
+    }
   };
 
   const handleNo = (question: string) => {
-    chatInputRef.current?.handleYesNoResponse(question, 'No');
+    if (chatInputRef.current) {
+      chatInputRef.current.handleYesNoResponse(question, 'No', true);
+    }
   };
 
   const simulateThinking = (callback: () => void) => {
@@ -129,32 +126,104 @@ const ChatPage = () => {
       };
       setMessages(prev => [...prev, versionMessage]);
 
-      // Add clarification question with rotating questions
-      simulateThinking(() => {
-        const nextQuestionIndex = (currentQuestionIndex + 1) % clarificationQuestions.length;
-        setCurrentQuestionIndex(nextQuestionIndex);
+      // Check if we've reached the clarification limit
+      if (clarificationCount >= 2) { // Change to 2 since we're counting from 0
+        // Show error message
+        simulateThinking(() => {
+          const errorMessage: IErrorSystemMessage = {
+            id: uuidv4(),
+            role: 'system',
+            type: 'error',
+            content: 'The application has encountered an error while processing your request. Restore to a previous version or ask Spaceship to fix the issue. You can also report the issue to the support team.',
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, errorMessage]);
+        });
+      } else {
+        // Add clarification question
+        simulateThinking(() => {
+          const nextQuestionIndex = (currentQuestionIndex + 1) % clarificationQuestions.length;
+          setCurrentQuestionIndex(nextQuestionIndex);
+          setClarificationCount(prev => prev + 1);
 
+          const clarificationMessage: IClarificationMessage = {
+            id: uuidv4(),
+            role: 'assistant' as const,
+            content: `Version ${newVersion} deployed`,
+            question: clarificationQuestions[nextQuestionIndex],
+            onYes: () => {},
+            onNo: () => {},
+            timestamp: new Date()
+          };
+          setMessages(prev => [...prev, clarificationMessage]);
+        });
+      }
+    });
+  };
+
+  const handleFixError = () => {
+    setIsLoading(true); // Start fixing animation
+    
+    setTimeout(() => {
+      // Add version message with fix
+      const versionMessage: IVersionSystemMessage = {
+        id: uuidv4(),
+        role: 'system',
+        type: 'version',
+        content: `Version ${currentVersion + 1} created with fixes`,
+        version: (currentVersion + 1).toString(),
+        features: [
+          'Error fixes applied',
+          'System stability improvements',
+          'Performance optimizations'
+        ],
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, versionMessage]);
+      
+      // Start thinking animation
+      simulateThinking(() => {
+        // Reset states
+        setCurrentVersion(prev => prev + 1);
+        setClarificationCount(0);
+        setCurrentQuestionIndex(0);
+
+        // Add new clarification question
         const clarificationMessage: IClarificationMessage = {
           id: uuidv4(),
-          role: 'assistant' as const,
-          content: `Version ${newVersion} deployed`,
-          question: clarificationQuestions[nextQuestionIndex],
+          role: 'assistant',
+          content: `Version ${currentVersion + 1} created`,
+          question: clarificationQuestions[0],
           onYes: () => {},
           onNo: () => {},
           timestamp: new Date()
         };
         setMessages(prev => [...prev, clarificationMessage]);
       });
+    }, 2000); // Fixing animation duration
+  };
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ 
+      behavior: "smooth",
+      block: "end" 
     });
   };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(scrollToBottom, 100);
+    return () => clearTimeout(timeoutId);
+  }, [messages, isLoading, questionCount]); // Add questionCount to dependencies
 
   return (
     <div className="flex w-full h-full bg-neutral-900 rounded-3xl overflow-hidden">
       {/* Chat Panel */}
-      <div className="w-2/5 h-full border-r border-neutral-800">
-        <div className="flex flex-col h-full">
+      <div className="w-2/5 h-full relative">
+        <div className="flex flex-col h-full bg-transparent">
           {/* Chat Header */}
-          <div className="flex-none min-h-[68px] border-b border-neutral-800">
+          <div className="flex-none min-h-[68px] border-b border-r border-neutral-800 bg-neutral-900">
             <div className="flex items-center p-4">
               <h2 className="font-primary text-h2 font-medium text-stone-100">
                 Carbon Calculator
@@ -163,28 +232,33 @@ const ChatPage = () => {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 h-full overflow-y-auto p-4">
+          <div className="flex-1 h-full overflow-y-auto p-4 scroll-smooth scrollbar-custom bg-transparent">
             <div className="flex flex-col">
               <MessageList 
                 messages={messages}
                 onYes={handleYes}
                 onNo={handleNo}
+                onFix={handleFixError}
+                onRestore={() => console.log('Restore version')}
+                onReport={() => console.log('Report issue')}
+                onQuestionsChange={setQuestionCount}
               />
               {isLoading && <ThinkingMessage />}
+              <div ref={messagesEndRef} className="h-[1px]" />
             </div>
           </div>
 
           {/* Chat Input */}
-          <div className="flex-none p-4 border-t border-neutral-800">
-              <ChatInput 
-                ref={chatInputRef}
-                onSubmit={handleSubmit}
-                disabled={isLoading}
-                isInitialChat={false}
-              />
-            </div>
+          <div className="p-4">
+            <ChatInput 
+              ref={chatInputRef}
+              onSubmit={handleSubmit}
+              disabled={isLoading}
+              isInitialChat={false}
+            />
           </div>
         </div>
+      </div>
 
       {/* Preview Panel */}
       <div className="w-3/5 h-full">
@@ -204,8 +278,8 @@ const ChatPage = () => {
               </div>
             </div>
           </div>
-          <div className="flex-1 bg-stone-800 p-4">
-            <div className="flex-1 overflow-auto rounded-3xl">
+          <div className="flex-1 bg-stone-800">
+            <div className="h-full">
                 <CarbonCalculator isLoading={isLoading} />
             </div>
           </div>

@@ -1,24 +1,39 @@
 // components/ui/typewriter-text.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 
-interface TypewriterTextProps {
+export interface TypewriterTextProps {
   text: string;
   speed?: number;
+  className?: string;
   onComplete?: () => void;
 }
 
-export const TypewriterText: React.FC<TypewriterTextProps> = ({ 
+export interface TypewriterRef {
+  complete: () => void;
+}
+
+const TypewriterText = forwardRef<TypewriterRef, TypewriterTextProps>(({ 
   text, 
-  speed = 30,
+  speed = 50, 
+  className = '',
   onComplete 
-}) => {
-  const [displayedText, setDisplayedText] = useState('');
+}, ref) => {
+  const [displayText, setDisplayText] = useState('');
+
+  useImperativeHandle(ref, () => ({
+    complete: () => {
+      setDisplayText(text);
+      onComplete?.();
+    }
+  }));
 
   useEffect(() => {
+    setDisplayText('');
     let currentIndex = 0;
+    
     const interval = setInterval(() => {
-      if (currentIndex <= text.length) {
-        setDisplayedText(text.slice(0, currentIndex));
+      if (currentIndex < text.length) {
+        setDisplayText(text.slice(0, currentIndex + 1));
         currentIndex++;
       } else {
         clearInterval(interval);
@@ -26,8 +41,15 @@ export const TypewriterText: React.FC<TypewriterTextProps> = ({
       }
     }, speed);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      setDisplayText('');
+    };
   }, [text, speed, onComplete]);
 
-  return <span>{displayedText}</span>;
-};
+  return <div className={className}>{displayText}</div>;
+});
+
+TypewriterText.displayName = "TypewriterText";
+
+export { TypewriterText };

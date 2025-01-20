@@ -102,3 +102,28 @@
 .astronaut-cursor:hover {
   cursor: url('/assets/astronaut_animated_medium.png') 16 16, pointer;
 }
+
+/* Add this to your CSS file */
+@layer utilities {
+  .scrollbar-custom {
+    scrollbar-width: thin;
+    scrollbar-color: #111 transparent;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-custom::-webkit-scrollbar-thumb {
+    background-color: #111;
+    border-radius: 20px;
+  }
+
+  .scrollbar-custom:hover::-webkit-scrollbar-thumb {
+    background-color: #222;
+  }
+}

@@ -13,7 +13,7 @@ interface ChatInputProps {
 }
 
 export interface ChatInputRef {
-  handleYesNoResponse: (question: string, response: 'Yes' | 'No') => void;
+  handleYesNoResponse: (question: string, response: 'Yes' | 'No', append?: boolean) => void;
 }
 
 const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
@@ -93,8 +93,8 @@ const ChatInput = forwardRef<ChatInputRef, ChatInputProps>(({
   }
 
   useImperativeHandle(ref, () => ({
-    handleYesNoResponse: (question: string, response: 'Yes' | 'No') => {
-      const newMessage = `${question} ${response}`;
+    handleYesNoResponse: (question: string, response: 'Yes' | 'No', append = false) => {
+      const newMessage = append ? message + `${question} ${response}\n` : `${question} ${response}`;
       setMessage(newMessage);
       onChange?.(newMessage);
     }

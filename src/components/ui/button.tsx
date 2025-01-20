@@ -20,9 +20,9 @@ const buttonVariants = cva(
         "link-secondary": "bg-transparent text-stone-800 hover:underline active:text-stone-900 disabled:text-stone-300",
       },
       size: {
-        default: "px-4 py-2",
-        sm: "rounded-md py-1 px-3 text-xs",
-        lg: "rounded-md py-3 px-8 text-base",
+        default: "py-2 px-4 ",
+        sm: "rounded-md py-2 px-3 text-xs",
+        lg: "rounded-md py-4 px-8 text-base",
         icon: "p-2",
       },
       iconPosition: {
