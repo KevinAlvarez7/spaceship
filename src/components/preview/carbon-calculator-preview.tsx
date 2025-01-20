@@ -1,8 +1,19 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calculator, AlertCircle, Loader2 } from 'lucide-react';
+import { Calculator, AlertCircle, Loader2, AlertTriangle } from 'lucide-react';
 
-const CarbonCalculator = ({ isLoading = false }) => {
+interface CarbonCalculatorProps {
+  isLoading?: boolean;
+  state?: {
+    type: 'error' | 'clarification' | 'version';
+    data?: {
+      features?: string[];
+      errorMessage?: string;
+    };
+  };
+}
+
+const CarbonCalculator = ({ isLoading = false, state }: CarbonCalculatorProps) => {
   const [values, setValues] = useState({
     electricity: '',
     transport: '',
@@ -24,7 +35,7 @@ const CarbonCalculator = ({ isLoading = false }) => {
   };
 
   return (
-    <div className="w-full h-full">
+    <div className="relative w-full h-full bg-stone-700">
       <AnimatePresence mode="wait">
         {isLoading ? (
           <motion.div
@@ -35,8 +46,8 @@ const CarbonCalculator = ({ isLoading = false }) => {
             className="h-full flex items-center justify-center"
           >
             <div className="flex flex-col items-center gap-4">
-              <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
-              <p className="text-gray-600">Updating calculator...</p>
+              <Loader2 className="w-8 h-8 text-stone-100 animate-spin" />
+              <p className="text-stone-100">Buidling prototype...</p>
             </div>
           </motion.div>
         ) : (
@@ -134,6 +145,21 @@ const CarbonCalculator = ({ isLoading = false }) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Error Overlay */}
+      {state?.type === 'error' && (
+        <div className="absolute inset-0 bg-neutral-950/80 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <AlertTriangle className="w-12 h-12 text-red-500" />
+            <p className="text-body font-base text-red-300">{state.data?.errorMessage}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Loading Overlay */}
+      {isLoading && (
+        <div className="absolute inset-0 bg-neutral-950/50" />
+      )}
     </div>
   );
 };

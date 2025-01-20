@@ -39,6 +39,14 @@ const ChatPage = () => {
 
   const chatInputRef = useRef<ChatInputRef>(null);
 
+  const [previewState, setPreviewState] = useState<{
+    type: 'error' | 'clarification' | 'version';
+    data?: {
+      features?: string[];
+      errorMessage?: string;
+    };
+  }>();
+
   const handleYes = (question: string) => {
     if (chatInputRef.current) {
       chatInputRef.current.handleYesNoResponse(question, 'Yes', true);
@@ -162,6 +170,12 @@ const ChatPage = () => {
   };
 
   const handleFixError = () => {
+    setPreviewState({
+      type: 'error',
+      data: {
+        errorMessage: 'The application has encountered an error. Please wait while we fix it.'
+      }
+    });
     setIsLoading(true); // Start fixing animation
     
     setTimeout(() => {
@@ -220,10 +234,10 @@ const ChatPage = () => {
   return (
     <div className="flex w-full h-full bg-neutral-900 rounded-3xl overflow-hidden">
       {/* Chat Panel */}
-      <div className="w-2/5 h-full relative">
+      <div className="w-2/5 border-r border-neutral-800 h-full relative">
         <div className="flex flex-col h-full bg-transparent">
           {/* Chat Header */}
-          <div className="flex-none min-h-[68px] border-b border-r border-neutral-800 bg-neutral-900">
+          <div className="flex-none min-h-[68px] border-b  border-neutral-800 bg-neutral-900">
             <div className="flex items-center p-4">
               <h2 className="font-primary text-h2 font-medium text-stone-100">
                 Carbon Calculator
@@ -278,9 +292,12 @@ const ChatPage = () => {
               </div>
             </div>
           </div>
-          <div className="flex-1 bg-stone-800">
+          <div className="flex-1">
             <div className="h-full">
-                <CarbonCalculator isLoading={isLoading} />
+              <CarbonCalculator 
+                isLoading={isLoading} 
+                state={previewState}
+              />
             </div>
           </div>
         </div>
