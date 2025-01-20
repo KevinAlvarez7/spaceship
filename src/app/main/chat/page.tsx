@@ -114,28 +114,16 @@ const ChatPage = () => {
 
     // Simulate AI thinking and response
     simulateThinking(() => {
-      // Increment version
-      const newVersion = currentVersion + 1;
-      setCurrentVersion(newVersion);
-
-      // Version message
-      const versionMessage: IVersionSystemMessage = {
-        id: uuidv4(),
-        role: 'system',
-        type: 'version',
-        content: `Version ${newVersion} created`,
-        version: newVersion.toString(),
-        features: [
-          'Basic form layout',
-          'Input validation',
-          'Submission handling'
-        ],
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, versionMessage]);
-
       // Check if we've reached the clarification limit
-      if (clarificationCount >= 2) { // Change to 2 since we're counting from 0
+      if (clarificationCount >= 1) { // Change to 2 since we're counting from 0
+        // Show error state in preview
+        setPreviewState({
+          type: 'error',
+          data: {
+            errorMessage: 'The application has encountered an error while processing your request.'
+          }
+        });
+        
         // Show error message
         simulateThinking(() => {
           const errorMessage: IErrorSystemMessage = {
@@ -148,34 +136,46 @@ const ChatPage = () => {
           setMessages(prev => [...prev, errorMessage]);
         });
       } else {
-        // Add clarification question
-        simulateThinking(() => {
-          const nextQuestionIndex = (currentQuestionIndex + 1) % clarificationQuestions.length;
-          setCurrentQuestionIndex(nextQuestionIndex);
-          setClarificationCount(prev => prev + 1);
+        // Increment version
+        const newVersion = currentVersion + 1;
+        setCurrentVersion(newVersion);
 
-          const clarificationMessage: IClarificationMessage = {
-            id: uuidv4(),
-            role: 'assistant' as const,
-            content: `Version ${newVersion} deployed`,
-            question: clarificationQuestions[nextQuestionIndex],
-            onYes: () => {},
-            onNo: () => {},
-            timestamp: new Date()
-          };
-          setMessages(prev => [...prev, clarificationMessage]);
-        });
+        // Version message
+        const versionMessage: IVersionSystemMessage = {
+          id: uuidv4(),
+          role: 'system',
+          type: 'version',
+          content: `Version ${newVersion} created`,
+          version: newVersion.toString(),
+          features: [
+            'Basic form layout',
+            'Input validation',
+            'Submission handling'
+          ],
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, versionMessage]);
+
+        // Add clarification question
+        const nextQuestionIndex = (currentQuestionIndex + 1) % clarificationQuestions.length;
+        setCurrentQuestionIndex(nextQuestionIndex);
+        setClarificationCount(prev => prev + 1);
+
+        const clarificationMessage: IClarificationMessage = {
+          id: uuidv4(),
+          role: 'assistant' as const,
+          content: `Version ${newVersion} deployed`,
+          question: clarificationQuestions[nextQuestionIndex],
+          onYes: () => {},
+          onNo: () => {},
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, clarificationMessage]);
       }
     });
   };
 
   const handleFixError = () => {
-    setPreviewState({
-      type: 'error',
-      data: {
-        errorMessage: 'The application has encountered an error. Please wait while we fix it.'
-      }
-    });
     setIsLoading(true); // Start fixing animation
     
     setTimeout(() => {
@@ -195,14 +195,14 @@ const ChatPage = () => {
       };
       setMessages(prev => [...prev, versionMessage]);
       
-      // Start thinking animation
-      simulateThinking(() => {
-        // Reset states
-        setCurrentVersion(prev => prev + 1);
-        setClarificationCount(0);
-        setCurrentQuestionIndex(0);
+      // Reset states
+      setCurrentVersion(prev => prev + 1);
+      setClarificationCount(0);
+      setCurrentQuestionIndex(0);
+      setPreviewState(undefined); // Clear error state
 
-        // Add new clarification question
+      // Start thinking animation for next clarification
+      simulateThinking(() => {
         const clarificationMessage: IClarificationMessage = {
           id: uuidv4(),
           role: 'assistant',
@@ -214,7 +214,7 @@ const ChatPage = () => {
         };
         setMessages(prev => [...prev, clarificationMessage]);
       });
-    }, 2000); // Fixing animation duration
+    }, 2000);
   };
 
   const messagesEndRef = useRef<HTMLDivElement>(null);

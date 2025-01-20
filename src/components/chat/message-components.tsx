@@ -205,7 +205,7 @@ export const ClarificationMessage = ({
   }, []);
 
   const questions = useMemo(() => {
-    const randomCount = Math.floor(Math.random() * 3) + 2; // Random number between 1-3
+    const randomCount = Math.floor(Math.random() * 2) + 1; // Random number between 1-3
     return [question, ...clarificationQuestions
       .filter(q => q !== question)
       .sort(() => Math.random() - 0.5)
@@ -293,7 +293,7 @@ export const ClarificationMessage = ({
                 <TypewriterText 
                   ref={typewriterRef}
                   text={q}
-                  speed={30} 
+                  speed={10} 
                   className="text-body font-base text-stone-300"
                   onComplete={() => handleTypingComplete(q)}
                 />
@@ -331,51 +331,47 @@ export const ClarificationMessage = ({
 };
 
 // Thinking Message
-export const ThinkingMessage = () => (
-  <MessageContainer>
-    <div className="flex items-center gap-2 mt-10 mb-10">
-      <motion.div
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.5, 1, 0.5]
-        }}
-        transition={{
-          duration: 1.5,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="w-2 h-2 bg-stone-400 rounded-full"
-      />
-      <motion.div
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.5, 1, 0.5]
-        }}
-        transition={{
-          duration: 1.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.2
-        }}
-        className="w-2 h-2 bg-stone-400 rounded-full"
-      />
-      <motion.div
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.5, 1, 0.5]
-        }}
-        transition={{
-          duration: 1.5,
-          repeat: Infinity,
-          ease: "easeInOut",
-          delay: 0.4
-        }}
-        className="w-2 h-2 bg-stone-400 rounded-full"
-      />
-      <span className="text-body-sm font-base text-stone-400">Space is thinking</span>
-    </div>
-  </MessageContainer>
-);
+export const ThinkingMessage = ({ type = 'thinking' }: { type?: 'thinking' | 'fixing' | 'clarifying' }) => {
+  const messages = {
+    thinking: ['Space is pondering', 'Space is thinking deeply', 'Space is building'],
+    fixing: 'Space is fixing',
+    clarifying: ['Space is pondering', 'Space is thinking deeply', 'Space is building']
+  };
+
+  return (
+    <MessageContainer>
+      <div className="flex flex-row items-center gap-2 mt-10 mb-10">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 1, 0.5],
+            color: ['rgb(168 162 158)', 'rgb(214 211 209)', 'rgb(168 162 158)']
+          }}
+          transition={{
+            duration: 1.5,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="w-2 h-2 bg-stone-400 rounded-full"
+        />
+        <motion.span
+          animate={{
+            opacity: [0.5, 1, 0.5],
+            color: ['rgb(168 162 158)', 'rgb(214 211 209)', 'rgb(168 162 158)']
+          }}
+          transition={{
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+          className="text-body-sm font-base"
+        >
+          {typeof messages[type] === 'string' ? messages[type] : messages[type][Math.floor(Math.random() * messages[type].length)]}
+        </motion.span>
+      </div>
+    </MessageContainer>
+  );
+};
 
 // Type guard functions
 const isSystemMessage = (message: IBaseMessage | SystemMessage | IClarificationMessage): message is SystemMessage => {
