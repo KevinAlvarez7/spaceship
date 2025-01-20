@@ -128,25 +128,51 @@ export const ErrorMessage = ({
   onReport: () => void
 }) => (
   <MessageContainer>
-    <div className="flex flex-col gap-2 border border-red-800 bg-neutral-950/30 p-4 rounded-xl">
-      <div className="flex items-center gap-2">
-        <AlertTriangle className="w-4 h-4 text-red-500" />
-        <div className="text-body-sm text-red-500 font-base">Error occurred</div>
+    <div className="flex flex-col gap-2 p-4 rounded-lg border border-red-800 bg-stone-950">
+      <div className="flex flex-row gap-4">
+        <div className="p-2 rounded-lg border border-stone-800 w-fit h-fit bg-stone-900">
+          <AlertTriangle className="w-4 h-4 text-red-500" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
+              <div className="text-body-sm font-base text-red-400">Error occurred</div>
+            </div>
+            <div className="text-body-sm font-base text-red-400">•</div>
+            <div className="text-body-sm font-base text-red-400">Action required</div>
+          </div>
+          <div className="text-body-sm font-base text-stone-300">
+            {content}
+          </div>
+        </div>
       </div>
-      <div className="text-body-sm font-base text-red-300">{content}</div>
-      <div className="flex gap-2 mt-2 justify-end">
-
-        <Button variant="ghost-secondary" size="sm" onClick={onRestore} iconPosition="leading">
+      <div className="flex justify-end gap-2">
+        <Button 
+          variant="ghost-secondary" 
+          size="sm"
+          iconPosition="leading"
+          onClick={onRestore}
+        >
           <RotateCcw className="w-4 h-4" />
-          Restore previous version
+          Restore Version
         </Button>
-        <Button variant="ghost-secondary" size="sm" onClick={onReport} iconPosition="leading">
+        <Button 
+          variant="ghost-secondary" 
+          size="sm"
+          iconPosition="leading"
+          onClick={onReport}
+        >
           <Bug className="w-4 h-4" />
-          Report issue
+          Report Issue
         </Button>
-        <Button variant="secondary" size="sm" onClick={onFix} iconPosition="leading">
+        <Button 
+          variant="secondary" 
+          size="sm"
+          iconPosition="leading"
+          onClick={onFix}
+        >
           <Check className="w-4 h-4" />
-          Fix error
+          Fix Error
         </Button>
       </div>
     </div>
